@@ -3,6 +3,9 @@ package org.usfirst.frc.team1786.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.RobotDrive;
+import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -16,6 +19,14 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+	
+	Joystick jstickLeft = new Joystick(0);
+	Joystick jstickRight = new Joystick(1);
+	CANTalon talonClimb = new CANTalon(1);
+	CANTalon talonPickup = new CANTalon(2);
+	CANTalon talonRightRear = new CANTalon(3);
+	CANTalon talonLeftRear = new CANTalon(4);
+	CANTalon
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -26,6 +37,7 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		
 	}
 
 	/**
