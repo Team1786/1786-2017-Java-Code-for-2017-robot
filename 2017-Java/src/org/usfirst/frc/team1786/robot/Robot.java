@@ -21,7 +21,7 @@ public class Robot extends IterativeRobot {
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
 	Joystick joystickLeft = new Joystick(0);
-	Joystick joystickRight = new Joystick(1);
+	Joystick joystickRight = new  Joystick(1);
 	
 	CANTalon climber = new CANTalon(1);
 	CANTalon ballPickup= new CANTalon(2);
