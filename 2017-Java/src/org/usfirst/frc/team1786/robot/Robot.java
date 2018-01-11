@@ -3,9 +3,9 @@ package org.usfirst.frc.team1786.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.RobotDrive;
-import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Joystick;
+import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -20,14 +20,22 @@ public class Robot extends IterativeRobot {
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
-	Joystick jstickLeft = new Joystick(0);
-	Joystick jstickRight = new Joystick(1);
-	CANTalon talonClimb = new CANTalon(1);
-	CANTalon talonPickup = new CANTalon(2);
-	CANTalon talonRightRear = new CANTalon(3);
-	CANTalon talonLeftRear = new CANTalon(4);
-	CANTalon
-
+	Joystick joystickLeft = new Joystick(0);
+	Joystick joystickRight = new Joystick(1);
+	
+	CANTalon climber = new CANTalon(1);
+	CANTalon ballPickup= new CANTalon(2);
+	CANTalon shooter = new CANTalon(5);
+	
+	CANTalon talonRearRight = new CANTalon(3);
+	CANTalon talonRearLeft = new CANTalon(4);
+	CANTalon talonFrontRight= new CANTalon(6);
+	CANTalon talonFrontRight = new CANTalon(7);
+	
+	double deadzone=.15;
+	double deadzoneZ=.3;
+	RobotDrive myRobot = new RobotDrive(leftFrontmotor, leftRearmotor, rightFrontmotor, rightRearmotor);
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -37,7 +45,6 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
-		
 	}
 
 	/**
@@ -80,7 +87,19 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putNumber("joystickY", joystickLeft.getY());
+		SmartDashboard.putNumber("joystickZ", joystickLeft.getZ());
+		SmartDashboard.putNumber("joystickX", joystickLeft.getX());
+		SmartDashboard.putNumber("modY", modXY(joystickLeft.GetY()));
+		SmartDashboard.putNumber("modZ", modZ());
+		SmartDashboard.putNumber("modX", modXY(joystickLeft.GetX()));
+		//myRobot.mecanumDrive_Polar(modY(),modX(), modZ());
+		//myRobot.mecanumDrive_Polar(modZ(), joystickLeft.getX(), modY());
+		myRobot.mecanumDrive_Cartesian(modXY(joystickLeft.GetX()), modXY(joystickLeft.GetY()), modZ(), 0);
+		
+		
 	}
+	
 
 	/**
 	 * This function is called periodically during test mode
@@ -88,5 +107,28 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 	}
-}
+	
+	public double modXY(i) {
+		if(-deadzone < i && i < deadzone)
+			{ 
+				return 0;
+			}
+		else 
+			{
+			return ((Math.abs(i)/i)*((Math.abs(i)-deadzone)/(1-deadzone));
+			}
+		}
+	public double modZ() {
+		if(-deadzoneZ < joystickLeft.getZ() && joystickLeft.getZ() < deadzoneZ)
+			{ 
+				return 0;
+			}
+		else 
+			{
+			return (joystickLeft.getZ()-deadzoneZ)/(1-deadzoneZ);
+			}
+		}
+
+
+	}
 
