@@ -3,6 +3,9 @@ package org.usfirst.frc.team1786.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
+import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -16,7 +19,23 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-
+	
+	Joystick joystickLeft = new Joystick(0);
+	Joystick joystickRight = new Joystick(1);
+	
+	CANTalon climber = new CANTalon(1);
+	CANTalon ballPickup= new CANTalon(2);
+	CANTalon shooter = new CANTalon(5);
+	
+	CANTalon rightRearmotor = new CANTalon(3);
+	CANTalon leftRearmotor= new CANTalon(4);
+	CANTalon rightFrontmotor= new CANTalon(6);
+	CANTalon leftFrontmotor = new CANTalon(7);
+	
+	double deadzone=.15;
+	double deadzoneZ=.3;
+	RobotDrive myRobot = new RobotDrive(leftFrontmotor, leftRearmotor, rightFrontmotor, rightRearmotor);
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -68,7 +87,19 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putNumber("joystickY", joystickLeft.getY());
+		SmartDashboard.putNumber("joystickZ", joystickLeft.getZ());
+		SmartDashboard.putNumber("joystickX", joystickLeft.getX());
+		SmartDashboard.putNumber("modY", modY());
+		SmartDashboard.putNumber("modZ", modZ());
+		SmartDashboard.putNumber("modX", modX());
+		//myRobot.mecanumDrive_Polar(modY(),modX(), modZ());
+		//myRobot.mecanumDrive_Polar(modZ(), joystickLeft.getX(), modY());
+		myRobot.mecanumDrive_Cartesian(modX(), modY(), modZ(), 0);
+		
+		
 	}
+	
 
 	/**
 	 * This function is called periodically during test mode
@@ -76,5 +107,37 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 	}
-}
+	
+	public double modY() {
+		if(-deadzone < joystickLeft.getY() && joystickLeft.getY() < deadzone)
+			{ 
+				return 0;
+			}
+		else 
+			{
+			return (joystickLeft.getY()-deadzone)/(1-deadzone);
+			}
+		}
+	public double modZ() {
+		if(-deadzoneZ < joystickLeft.getZ() && joystickLeft.getZ() < deadzoneZ)
+			{ 
+				return 0;
+			}
+		else 
+			{
+			return (joystickLeft.getZ()-deadzoneZ)/(1-deadzoneZ);
+			}
+		}
+	public double modX() {
+		if(-deadzone < joystickLeft.getX() && joystickLeft.getX() < deadzone)
+			{ 
+				return 0;
+			}
+		else 
+			{
+			return (joystickLeft.getX()-deadzone)/(1-deadzone);
+			}
+		}
+
+	}
 
